@@ -1,13 +1,22 @@
 package cl.olimpictraining.app.ui.evaluacion
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.MonitorWeight
 import androidx.compose.material.icons.filled.Assessment
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cl.olimpictraining.app.ui.theme.*
@@ -15,34 +24,30 @@ import cl.olimpictraining.app.ui.theme.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EvaluacionScreen(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onBioimpedanciaClick: () -> Unit,
+    onFuerzaClick: () -> Unit,
+    onMedidasClick: () -> Unit
 ) {
 
     Scaffold(
-        containerColor =
-            OlimpicBackground,
+        containerColor = OlimpicBackground,
 
         topBar = {
-
             TopAppBar(
                 title = {
                     Text(
-                        "Evaluaciones",
-                        fontWeight =
-                            FontWeight.Bold
+                        text = "Evaluación física",
+                        fontWeight = FontWeight.Bold
                     )
                 },
-
                 navigationIcon = {
-
                     IconButton(
                         onClick = onBack
                     ) {
-
                         Icon(
                             Icons.Default.ArrowBack,
-                            contentDescription =
-                                "Volver"
+                            contentDescription = "Volver"
                         )
                     }
                 }
@@ -50,101 +55,187 @@ fun EvaluacionScreen(
         }
     ) { padding ->
 
-        Column(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(20.dp)
+                .padding(padding),
+            contentAlignment = Alignment.TopCenter
         ) {
+            val isTablet = maxWidth >= 600.dp
 
-            Text(
-                "Evalúa tu progreso",
-                style =
-                    MaterialTheme.typography.headlineMedium,
-                fontWeight =
-                    FontWeight.Bold
-            )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .widthIn(max = 900.dp),
 
-            Spacer(
-                Modifier.height(8.dp)
-            )
+                contentPadding = PaddingValues(
+                    horizontal = 20.dp,
+                    vertical = 18.dp
+                ),
 
-            Text(
-                "Solicita una evaluación con el equipo de Olimpic Training.",
-                color =
-                    OlimpicTextSecondary
-            )
-
-            Spacer(
-                Modifier.height(26.dp)
-            )
-
-            Card(
-                modifier =
-                    Modifier.fillMaxWidth(),
-                shape =
-                    RoundedCornerShape(24.dp),
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor =
-                            MaterialTheme.colorScheme.surface
-                    )
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
-                Column(
-                    modifier =
-                        Modifier.padding(22.dp)
-                ) {
-
-                    Icon(
-                        Icons.Default.Assessment,
-                        contentDescription = null,
-                        tint =
-                            OlimpicBlue,
-                        modifier =
-                            Modifier.size(44.dp)
+                item {
+                    Text(
+                        text = "Conoce tu progreso",
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.ExtraBold
                     )
 
                     Spacer(
-                        Modifier.height(16.dp)
+                        modifier = Modifier.height(6.dp)
                     )
 
                     Text(
-                        "Evaluación física",
-                        fontWeight =
-                            FontWeight.Bold,
-                        style =
-                            MaterialTheme.typography.titleLarge
+                        text = "Selecciona la evaluación que quieres realizar.",
+                        color = OlimpicTextSecondary
                     )
+                }
 
-                    Spacer(
-                        Modifier.height(6.dp)
-                    )
+                if (isTablet) {
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Box(modifier = Modifier.weight(1f)) {
+                                EvaluationMenuCard(
+                                    title = "Bioimpedancia",
+                                    description = "Conoce distintos indicadores relacionados con tu composición corporal.",
+                                    icon = Icons.Default.Assessment,
+                                    onClick = onBioimpedanciaClick
+                                )
+                            }
+                            Box(modifier = Modifier.weight(1f)) {
+                                EvaluationMenuCard(
+                                    title = "Fuerza de agarre",
+                                    description = "Mide la fuerza de prensión de tu mano mediante dinamometría.",
+                                    icon = Icons.Default.FitnessCenter,
+                                    onClick = onFuerzaClick
+                                )
+                            }
+                        }
+                    }
 
-                    Text(
-                        "Solicita una hora para conocer tu progreso y actualizar tus objetivos.",
-                        color =
-                            OlimpicTextSecondary
-                    )
+                    item {
+                        EvaluationMenuCard(
+                            title = "Medidas corporales",
+                            description = "Registra tu peso y altura y revisa la evolución de tus mediciones.",
+                            icon = Icons.Default.MonitorWeight,
+                            onClick = onMedidasClick
+                        )
+                    }
+                } else {
+                    item {
+                        EvaluationMenuCard(
+                            title = "Bioimpedancia",
+                            description = "Conoce distintos indicadores relacionados con tu composición corporal.",
+                            icon = Icons.Default.Assessment,
+                            onClick = onBioimpedanciaClick
+                        )
+                    }
 
-                    Spacer(
-                        Modifier.height(20.dp)
-                    )
+                    item {
+                        EvaluationMenuCard(
+                            title = "Fuerza de agarre",
+                            description = "Mide la fuerza de prensión de tu mano mediante dinamometría.",
+                            icon = Icons.Default.FitnessCenter,
+                            onClick = onFuerzaClick
+                        )
+                    }
 
-                    Button(
-                        onClick = {},
-                        modifier =
-                            Modifier.fillMaxWidth(),
-                        shape =
-                            RoundedCornerShape(14.dp)
-                    ) {
-
-                        Text(
-                            "Solicitar evaluación"
+                    item {
+                        EvaluationMenuCard(
+                            title = "Medidas corporales",
+                            description = "Registra tu peso y altura y revisa la evolución de tus mediciones.",
+                            icon = Icons.Default.MonitorWeight,
+                            onClick = onMedidasClick
                         )
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun EvaluationMenuCard(
+    title: String,
+    description: String,
+    icon: ImageVector,
+    onClick: () -> Unit
+) {
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            },
+
+        shape = RoundedCornerShape(24.dp),
+
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 3.dp
+        )
+    ) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Surface(
+                modifier = Modifier.size(54.dp),
+                shape = CircleShape,
+                color = OlimpicBlueLight
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = OlimpicBlue,
+                    modifier = Modifier.padding(14.dp)
+                )
+            }
+
+            Spacer(
+                modifier = Modifier.width(16.dp)
+            )
+
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.ExtraBold
+                )
+
+                Spacer(
+                    modifier = Modifier.height(5.dp)
+                )
+
+                Text(
+                    text = description,
+                    color = OlimpicTextSecondary,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = OlimpicTextSecondary
+            )
         }
     }
 }

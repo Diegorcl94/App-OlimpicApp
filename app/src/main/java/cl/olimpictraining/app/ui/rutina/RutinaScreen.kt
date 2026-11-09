@@ -1,13 +1,18 @@
 package cl.olimpictraining.app.ui.rutina
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cl.olimpictraining.app.ui.theme.*
@@ -17,32 +22,23 @@ import cl.olimpictraining.app.ui.theme.*
 fun RutinaScreen(
     onBack: () -> Unit
 ) {
-
     Scaffold(
-        containerColor =
-            OlimpicBackground,
-
+        containerColor = OlimpicBackground,
         topBar = {
-
             TopAppBar(
                 title = {
                     Text(
-                        "Mi rutina",
-                        fontWeight =
-                            FontWeight.Bold
+                        text = "Mi rutina",
+                        fontWeight = FontWeight.Bold
                     )
                 },
-
                 navigationIcon = {
-
                     IconButton(
                         onClick = onBack
                     ) {
-
                         Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription =
-                                "Volver"
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Volver"
                         )
                     }
                 }
@@ -50,110 +46,124 @@ fun RutinaScreen(
         }
     ) { padding ->
 
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(20.dp)
+                .background(OlimpicBackground)
         ) {
 
-            Text(
-                text =
-                    "Tu entrenamiento",
-                style =
-                    MaterialTheme.typography.headlineMedium,
-                fontWeight =
-                    FontWeight.Bold
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .background(
+                        Brush.linearGradient(
+                            colors = listOf(
+                                OlimpicBlueDeep,
+                                OlimpicBlue,
+                                OlimpicCyan
+                            )
+                        )
+                    )
             )
 
-            Spacer(
-                Modifier.height(6.dp)
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-            Text(
-                text =
-                    "Rutina asignada por tu profesor.",
-                color =
-                    OlimpicTextSecondary
-            )
-
-            Spacer(
-                Modifier.height(24.dp)
-            )
-
-            ExerciseCard(
-                "Press de banca",
-                "4 series · 10 repeticiones"
-            )
-
-            ExerciseCard(
-                "Sentadilla",
-                "4 series · 12 repeticiones"
-            )
-
-            ExerciseCard(
-                "Remo",
-                "3 series · 12 repeticiones"
-            )
-
-            ExerciseCard(
-                "Plancha",
-                "3 series · 45 segundos"
-            )
-        }
-    }
-}
-
-@Composable
-private fun ExerciseCard(
-    title: String,
-    subtitle: String
-) {
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                bottom = 12.dp
-            ),
-        shape =
-            RoundedCornerShape(20.dp),
-        colors =
-            CardDefaults.cardColors(
-                containerColor =
-                    MaterialTheme.colorScheme.surface
-            )
-    ) {
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(18.dp)
-        ) {
-
-            Icon(
-                Icons.Default.FitnessCenter,
-                contentDescription = null,
-                tint = OlimpicBlue
-            )
-
-            Spacer(
-                Modifier.width(14.dp)
-            )
-
-            Column {
-
-                Text(
-                    title,
-                    fontWeight =
-                        FontWeight.Bold
+                Spacer(
+                    modifier = Modifier.height(42.dp)
                 )
 
-                Text(
-                    subtitle,
-                    color =
-                        OlimpicTextSecondary
+                Surface(
+                    modifier = Modifier.size(88.dp),
+                    shape = CircleShape,
+                    color = Color.White.copy(alpha = 0.18f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.FitnessCenter,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.padding(22.dp)
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier.height(26.dp)
                 )
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(28.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White
+                    ),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 7.dp
+                    )
+                ) {
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(26.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Text(
+                            text = "🏋️",
+                            style = MaterialTheme.typography.headlineLarge
+                        )
+
+                        Spacer(
+                            modifier = Modifier.height(14.dp)
+                        )
+
+                        Text(
+                            text = "Aún no tienes una rutina asignada",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = OlimpicTextPrimary
+                        )
+
+                        Spacer(
+                            modifier = Modifier.height(10.dp)
+                        )
+
+                        Text(
+                            text = "Cuando tu profesor asigne tu plan de entrenamiento, podrás verlo desde esta sección.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = OlimpicTextSecondary
+                        )
+
+                        Spacer(
+                            modifier = Modifier.height(22.dp)
+                        )
+
+                        Button(
+                            onClick = {
+                                // Más adelante aquí conectaremos
+                                // la solicitud real a Firebase
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(54.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = OlimpicBlue
+                            )
+                        ) {
+                            Text(
+                                text = "Solicitar mi rutina",
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
             }
         }
     }

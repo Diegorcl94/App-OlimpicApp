@@ -1,8 +1,9 @@
 package cl.olimpictraining.app.ui.home
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,22 +18,34 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
-
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import cl.olimpictraining.app.R
+import cl.olimpictraining.app.ui.components.UserAvatar
 import cl.olimpictraining.app.ui.theme.*
 import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
+    userName: String,
+    selectedAvatarId: String,
     onReservasClick: () -> Unit,
     onRutinaClick: () -> Unit,
     onEvaluacionClick: () -> Unit,
@@ -46,150 +59,276 @@ fun HomeScreen(
         visible = true
     }
 
-    Scaffold(
-        containerColor = OlimpicBackground,
-        bottomBar = {
-            PremiumBottomBar(
-                onReservasClick = onReservasClick,
-                onRutinaClick = onRutinaClick,
-                onPerfilClick = onPerfilClick
-            )
-        }
-    ) { padding ->
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val isTablet = maxWidth >= 600.dp
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-
-            // Fondo superior premium
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(230.dp)
-                    .clip(
-                        RoundedCornerShape(
-                            bottomStart = 32.dp,
-                            bottomEnd = 32.dp
+        Row(modifier = Modifier.fillMaxSize()) {
+            if (isTablet) {
+                NavigationRail(
+                    containerColor = Color.White,
+                    header = {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Icon(
+                            Icons.Default.FitnessCenter,
+                            contentDescription = "Olimpic Training",
+                            tint = OlimpicBlue
                         )
-                    )
-                    .background(
-                        Brush.linearGradient(
-                            colors = listOf(
-                                OlimpicBlueDeep,
-                                OlimpicBlue,
-                                OlimpicCyan
-                            )
-                        )
-                    )
-            )
-
-            // Círculos decorativos
-            Box(
-                modifier = Modifier
-                    .offset(x = 250.dp, y = 22.dp)
-                    .size(130.dp)
-                    .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.12f))
-            )
-
-            Box(
-                modifier = Modifier
-                    .offset(x = (-45).dp, y = 70.dp)
-                    .size(115.dp)
-                    .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.10f))
-            )
-
-            AnimatedVisibility(
-                visible = visible,
-                enter = fadeIn() + slideInVertically(initialOffsetY = { 60 })
-            ) {
-
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(
-                        start = 20.dp,
-                        end = 20.dp,
-                        top = 24.dp,
-                        bottom = 28.dp
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(18.dp)
+                    }
                 ) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    NavigationRailItem(
+                        selected = true,
+                        onClick = {},
+                        icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
+                        label = { Text("Inicio") }
+                    )
+                    NavigationRailItem(
+                        selected = false,
+                        onClick = onReservasClick,
+                        icon = { Icon(Icons.Default.CalendarMonth, contentDescription = "Reservas") },
+                        label = { Text("Reservas") }
+                    )
+                    NavigationRailItem(
+                        selected = false,
+                        onClick = onRutinaClick,
+                        icon = { Icon(Icons.Default.FitnessCenter, contentDescription = "Rutina") },
+                        label = { Text("Rutina") }
+                    )
+                    NavigationRailItem(
+                        selected = false,
+                        onClick = onPerfilClick,
+                        icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
+                        label = { Text("Perfil") }
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
 
-                    item {
-                        HeaderSection(
+            Scaffold(
+                modifier = Modifier.weight(1f),
+                containerColor = OlimpicBackground,
+                bottomBar = {
+                    if (!isTablet) {
+                        PremiumBottomBar(
+                            onReservasClick = onReservasClick,
+                            onRutinaClick = onRutinaClick,
                             onPerfilClick = onPerfilClick
                         )
                     }
+                }
+            ) { padding ->
 
-                    item {
-                        HeroCard()
-                    }
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                ) {
 
-                    item {
-                        SectionTitle("Accesos rápidos")
-                    }
-
-                    item {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(14.dp)
+                    // Fondo superior premium
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(230.dp)
+                            .clip(
+                                RoundedCornerShape(
+                                    bottomStart = 32.dp,
+                                    bottomEnd = 32.dp
+                                )
+                            )
+                            .background(
+                                Brush.linearGradient(
+                                    colors = listOf(
+                                        OlimpicBlueDeep,
+                                        OlimpicBlue,
+                                        OlimpicCyan
+                                    )
+                                )
+                            )
+                    ) {
+                        Box(
+                            modifier = Modifier.matchParentSize(),
+                            contentAlignment = Alignment.CenterEnd
                         ) {
-                            QuickActionCard(
-                                modifier = Modifier.weight(1f),
-                                title = "Reservar hora",
-                                subtitle = "Agenda tu entrenamiento",
-                                icon = Icons.Default.CalendarMonth,
-                                iconContainerColor = Color(0xFFE9F1FF),
-                                onClick = onReservasClick
-                            )
-
-                            QuickActionCard(
-                                modifier = Modifier.weight(1f),
-                                title = "Mi rutina",
-                                subtitle = "Revisa tu plan semanal",
-                                icon = Icons.Default.FitnessCenter,
-                                iconContainerColor = Color(0xFFEFF2FF),
-                                onClick = onRutinaClick
-                            )
+                            HeaderBackgroundLogo()
                         }
                     }
 
-                    item {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(14.dp)
+                    // Círculos decorativos
+                    Box(
+                        modifier = Modifier
+                            .offset(x = 250.dp, y = 22.dp)
+                            .size(130.dp)
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.12f))
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .offset(x = (-45).dp, y = 70.dp)
+                            .size(115.dp)
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.10f))
+                    )
+
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = visible,
+                        enter = fadeIn() + slideInVertically(initialOffsetY = { 60 })
+                    ) {
+
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.TopCenter
                         ) {
-                            QuickActionCard(
-                                modifier = Modifier.weight(1f),
-                                title = "Evaluación",
-                                subtitle = "Solicita una revisión",
-                                icon = Icons.Default.Assessment,
-                                iconContainerColor = Color(0xFFEAF7FF),
-                                onClick = onEvaluacionClick
-                            )
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .widthIn(max = 900.dp),
+                                contentPadding = PaddingValues(
+                                    start = 20.dp,
+                                    end = 20.dp,
+                                    top = 24.dp,
+                                    bottom = 28.dp
+                                ),
+                                verticalArrangement = Arrangement.spacedBy(18.dp)
+                            ) {
 
-                            QuickActionCard(
-                                modifier = Modifier.weight(1f),
-                                title = "Eventos",
-                                subtitle = "Desafíos y actividades",
-                                icon = Icons.Default.Event,
-                                iconContainerColor = Color(0xFFF3EEFF),
-                                onClick = onEventosClick
-                            )
+                                item {
+                                    HeaderSection(
+                                        userName = userName,
+                                        selectedAvatarId = selectedAvatarId,
+                                        onPerfilClick = onPerfilClick
+                                    )
+                                }
+
+                                item {
+                                    HeroCard()
+                                }
+
+                                item {
+                                    Surface(
+                                        shape = RoundedCornerShape(14.dp),
+                                        color = OlimpicBlue.copy(alpha = 0.92f),
+                                        shadowElevation = 4.dp
+                                    ) {
+                                        Text(
+                                            text = "Accesos rápidos",
+                                            modifier = Modifier.padding(
+                                                horizontal = 14.dp,
+                                                vertical = 8.dp
+                                            ),
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            color = Color.White
+                                        )
+                                    }
+                                }
+
+                                item {
+                                    if (isTablet) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.spacedBy(14.dp)
+                                        ) {
+                                            QuickActionCard(
+                                                modifier = Modifier.weight(1f),
+                                                title = "Reservar hora",
+                                                subtitle = "Agenda tu entrenamiento",
+                                                icon = Icons.Default.CalendarMonth,
+                                                iconContainerColor = Color(0xFFE9F1FF),
+                                                onClick = onReservasClick
+                                            )
+
+                                            QuickActionCard(
+                                                modifier = Modifier.weight(1f),
+                                                title = "Mi rutina",
+                                                subtitle = "Consulta tu plan",
+                                                icon = Icons.Default.FitnessCenter,
+                                                iconContainerColor = Color(0xFFEFF2FF),
+                                                onClick = onRutinaClick
+                                            )
+
+                                            QuickActionCard(
+                                                modifier = Modifier.weight(1f),
+                                                title = "Evaluación",
+                                                subtitle = "Solicita una evaluación",
+                                                icon = Icons.Default.Assessment,
+                                                iconContainerColor = Color(0xFFEAF7FF),
+                                                onClick = onEvaluacionClick
+                                            )
+
+                                            QuickActionCard(
+                                                modifier = Modifier.weight(1f),
+                                                title = "Eventos",
+                                                subtitle = "Revisa actividades",
+                                                icon = Icons.Default.Event,
+                                                iconContainerColor = Color(0xFFF3EEFF),
+                                                onClick = onEventosClick
+                                            )
+                                        }
+                                    } else {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.spacedBy(14.dp)
+                                        ) {
+                                            QuickActionCard(
+                                                modifier = Modifier.weight(1f),
+                                                title = "Reservar hora",
+                                                subtitle = "Agenda tu entrenamiento",
+                                                icon = Icons.Default.CalendarMonth,
+                                                iconContainerColor = Color(0xFFE9F1FF),
+                                                onClick = onReservasClick
+                                            )
+
+                                            QuickActionCard(
+                                                modifier = Modifier.weight(1f),
+                                                title = "Mi rutina",
+                                                subtitle = "Consulta tu plan",
+                                                icon = Icons.Default.FitnessCenter,
+                                                iconContainerColor = Color(0xFFEFF2FF),
+                                                onClick = onRutinaClick
+                                            )
+                                        }
+                                    }
+                                }
+
+                                if (!isTablet) {
+                                    item {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.spacedBy(14.dp)
+                                        ) {
+                                            QuickActionCard(
+                                                modifier = Modifier.weight(1f),
+                                                title = "Evaluación",
+                                                subtitle = "Solicita una evaluación",
+                                                icon = Icons.Default.Assessment,
+                                                iconContainerColor = Color(0xFFEAF7FF),
+                                                onClick = onEvaluacionClick
+                                            )
+
+                                            QuickActionCard(
+                                                modifier = Modifier.weight(1f),
+                                                title = "Eventos",
+                                                subtitle = "Revisa actividades",
+                                                icon = Icons.Default.Event,
+                                                iconContainerColor = Color(0xFFF3EEFF),
+                                                onClick = onEventosClick
+                                            )
+                                        }
+                                    }
+                                }
+
+                                item {
+                                    SectionTitle("Próximos eventos")
+                                }
+
+                                item {
+                                    UpcomingEventCard(
+                                        onClick = onEventosClick
+                                    )
+                                }
+                            }
                         }
-                    }
-
-                    item {
-                        SectionTitle("Próximos eventos")
-                    }
-
-                    item {
-                        UpcomingEventCard(
-                            onClick = onEventosClick
-                        )
                     }
                 }
             }
@@ -198,7 +337,26 @@ fun HomeScreen(
 }
 
 @Composable
+private fun HeaderBackgroundLogo() {
+    Image(
+        painter = painterResource(id = R.drawable.logo_olimpic),
+        contentDescription = null,
+        modifier = Modifier
+            .size(180.dp)
+            .blur(1.dp),
+        contentScale = ContentScale.Fit,
+        alpha = 0.18f,
+        colorFilter = ColorFilter.tint(
+            color = Color.White,
+            blendMode = BlendMode.SrcIn
+        )
+    )
+}
+
+@Composable
 private fun HeaderSection(
+    userName: String,
+    selectedAvatarId: String,
     onPerfilClick: () -> Unit
 ) {
     Row(
@@ -218,7 +376,7 @@ private fun HeaderSection(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Hola, Diego 👋",
+                text = "Hola, $userName 👋",
                 color = Color.White,
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.ExtraBold
@@ -249,20 +407,13 @@ private fun HeaderSection(
                 )
             }
 
-            Surface(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clickable { onPerfilClick() },
-                shape = CircleShape,
-                color = Color.White.copy(alpha = 0.18f)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Perfil",
-                    tint = Color.White,
-                    modifier = Modifier.padding(12.dp)
-                )
-            }
+            UserAvatar(
+                avatarId = selectedAvatarId,
+                size = 52.dp,
+                modifier = Modifier.clickable {
+                    onPerfilClick()
+                }
+            )
         }
     }
 }
@@ -349,7 +500,7 @@ private fun QuickActionCard(
 ) {
     Card(
         modifier = modifier
-            .height(154.dp)
+            .heightIn(min = 170.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
@@ -361,11 +512,11 @@ private fun QuickActionCard(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(18.dp)
         ) {
             Surface(
-                modifier = Modifier.size(48.dp),
+                modifier = Modifier.size(46.dp),
                 shape = CircleShape,
                 color = iconContainerColor
             ) {
@@ -373,25 +524,31 @@ private fun QuickActionCard(
                     imageVector = icon,
                     contentDescription = null,
                     tint = OlimpicBlue,
-                    modifier = Modifier.padding(12.dp)
+                    modifier = Modifier.padding(11.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
 
             Text(
                 text = title,
                 fontWeight = FontWeight.ExtraBold,
                 color = OlimpicTextPrimary,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 2
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(
+                modifier = Modifier.height(6.dp)
+            )
 
             Text(
                 text = subtitle,
                 color = OlimpicTextSecondary,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                lineHeight = 19.sp
             )
         }
     }
@@ -416,35 +573,20 @@ private fun UpcomingEventCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(18.dp),
+                .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Surface(
-                shape = RoundedCornerShape(18.dp),
+                shape = CircleShape,
                 color = OlimpicBlueLight,
-                modifier = Modifier.size(
-                    width = 64.dp,
-                    height = 72.dp
-                )
+                modifier = Modifier.size(52.dp)
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "30",
-                        color = OlimpicBlue,
-                        fontWeight = FontWeight.ExtraBold,
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                    Text(
-                        text = "OCT",
-                        color = OlimpicBlue,
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Default.Event,
+                    contentDescription = null,
+                    tint = OlimpicBlue,
+                    modifier = Modifier.padding(14.dp)
+                )
             }
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -453,7 +595,7 @@ private fun UpcomingEventCard(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Desafío Olimpic Halloween",
+                    text = "No hay eventos programados",
                     fontWeight = FontWeight.ExtraBold,
                     color = OlimpicTextPrimary,
                     style = MaterialTheme.typography.titleMedium
@@ -462,17 +604,10 @@ private fun UpcomingEventCard(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = "Actividad deportiva para colaboradores Caja Los Andes.",
+                    text = "Te avisaremos cuando tengamos nuevas actividades para ti.",
                     color = OlimpicTextSecondary,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Text(
-                    text = "Ver detalle",
-                    color = OlimpicBlue,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.bodyMedium,
+                    lineHeight = 18.sp
                 )
             }
         }
@@ -486,6 +621,9 @@ private fun PremiumBottomBar(
     onPerfilClick: () -> Unit
 ) {
     Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding(),
         color = Color.White,
         shadowElevation = 18.dp
     ) {

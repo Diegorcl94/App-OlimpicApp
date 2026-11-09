@@ -7,6 +7,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,10 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -71,17 +76,23 @@ fun LoginScreen(
         label = "circleMovement"
     )
 
+    val textShadow = Shadow(
+        color = Color.Black.copy(alpha = 0.35f),
+        offset = Offset(1.5f, 2.5f),
+        blurRadius = 4f
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(OlimpicBackground)
     ) {
 
-        // CABECERA AZUL
+        // CABECERA AZUL (Ampliada a 480.dp para cubrir todo el texto superior)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(380.dp)
+                .height(480.dp)
                 .background(
                     brush = Brush.linearGradient(
                         colors = listOf(
@@ -119,7 +130,7 @@ fun LoginScreen(
                 .background(Color.White)
         )
 
-        AnimatedVisibility(
+        androidx.compose.animation.AnimatedVisibility(
             visible = visible,
             enter =
                 fadeIn(
@@ -131,354 +142,366 @@ fun LoginScreen(
                 )
         ) {
 
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(
-                        horizontal = 22.dp
-                    ),
-                horizontalAlignment =
-                    Alignment.CenterHorizontally
+                    .statusBarsPadding()
+                    .navigationBarsPadding()
+                    .imePadding(),
+                contentPadding = PaddingValues(
+                    start = 22.dp,
+                    end = 22.dp,
+                    top = 20.dp,
+                    bottom = 32.dp
+                ),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Spacer(
-                    modifier = Modifier.height(48.dp)
-                )
-
-                Image(
-                    painter = painterResource(id = R.drawable.logo_olimpic),
-                    contentDescription = "Logo Olimpic Training",
-                    modifier = Modifier
-                        .size(105.dp)
-                )
-
-                Spacer(
-                    modifier = Modifier.height(12.dp)
-                )
-
-                Text(
-                    text = "Olimpic",
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 28.sp,
-                    color = Color.White
-                )
-
-                Spacer(
-                    modifier = Modifier.height(2.dp)
-                )
-
-                Text(
-                    text = "TRAINING",
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 10.sp,
-                    letterSpacing = 4.sp,
-                    color = Color.White.copy(alpha = 0.90f)
-                )
-
-                Spacer(
-                    modifier = Modifier.height(22.dp)
-                )
-
-                Text(
-                    text = "Tu progreso\nempieza hoy.",
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 30.sp,
-                    lineHeight = 38.sp,
-                    color = Color.White
-                )
-
-                Spacer(
-                    modifier = Modifier.height(14.dp)
-                )
-
-                Text(
-                    text = "Entrena, reserva y lleva tu progreso siempre contigo.",
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 13.sp,
-                    lineHeight = 19.sp,
-                    color = Color.White.copy(alpha = 0.85f)
-                )
-
-                Spacer(
-                    modifier = Modifier.height(30.dp)
-                )
-
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(26.dp),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 12.dp
-                    ),
-                    colors = CardDefaults.cardColors(
-                        containerColor = OlimpicWhite
-                    )
-                ) {
-
-                    Column(
+                item {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo_olimpic),
+                        contentDescription = "Logo Olimpic Training",
                         modifier = Modifier
-                            .padding(22.dp)
+                            .size(105.dp)
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(12.dp)
+                    )
+
+                    Text(
+                        text = "Olimpic",
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 28.sp,
+                        color = Color.White,
+                        style = TextStyle(shadow = textShadow)
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(2.dp)
+                    )
+
+                    Text(
+                        text = "TRAINING",
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 10.sp,
+                        letterSpacing = 4.sp,
+                        color = Color.White.copy(alpha = 0.95f),
+                        style = TextStyle(shadow = textShadow)
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(22.dp)
+                    )
+
+                    Text(
+                        text = "Tu progreso\nempieza hoy.",
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 30.sp,
+                        lineHeight = 38.sp,
+                        color = Color.White,
+                        style = TextStyle(shadow = textShadow)
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(14.dp)
+                    )
+
+                    Text(
+                        text = "Entrena, reserva y lleva tu progreso siempre contigo.",
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 13.sp,
+                        lineHeight = 19.sp,
+                        color = Color.White.copy(alpha = 0.90f),
+                        style = TextStyle(shadow = textShadow)
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(30.dp)
+                    )
+                }
+
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(26.dp),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 12.dp
+                        ),
+                        colors = CardDefaults.cardColors(
+                            containerColor = OlimpicWhite
+                        )
                     ) {
 
-                        Text(
-                            text = "Bienvenido",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = OlimpicTextPrimary,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Spacer(
-                            modifier = Modifier.height(4.dp)
-                        )
-
-                        Text(
-                            text = "Ingresa con tu cuenta corporativa.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = OlimpicTextSecondary
-                        )
-
-                        Spacer(
-                            modifier = Modifier.height(22.dp)
-                        )
-
-                        Text(
-                            text = "Correo corporativo",
-                            style = MaterialTheme.typography.labelLarge
-                        )
-
-                        Spacer(
-                            modifier = Modifier.height(7.dp)
-                        )
-
-                        OutlinedTextField(
-                            value = email,
-                            onValueChange = {
-                                email = it.trim()
-                                errorMessage = null
-                            },
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            placeholder = {
-                                Text(
-                                    "nombre@cajalosandes.cl"
-                                )
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Email,
-                                    contentDescription = null,
-                                    tint = OlimpicBlue
-                                )
-                            },
-                            keyboardOptions =
-                                KeyboardOptions(
-                                    keyboardType =
-                                        KeyboardType.Email
-                                ),
-                            singleLine = true,
-                            shape = RoundedCornerShape(15.dp)
-                        )
-
-                        Spacer(
-                            modifier = Modifier.height(15.dp)
-                        )
-
-                        Text(
-                            text = "Contraseña",
-                            style = MaterialTheme.typography.labelLarge
-                        )
-
-                        Spacer(
-                            modifier = Modifier.height(7.dp)
-                        )
-
-                        OutlinedTextField(
-                            value = password,
-                            onValueChange = {
-                                password = it
-                                errorMessage = null
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            placeholder = {
-                                Text("••••••••")
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Lock,
-                                    contentDescription = null,
-                                    tint = OlimpicBlue
-                                )
-                            },
-                            visualTransformation =
-                                PasswordVisualTransformation(),
-                            singleLine = true,
-                            shape = RoundedCornerShape(15.dp)
-                        )
-
-                        AnimatedVisibility(
-                            visible =
-                                errorMessage != null
+                                .padding(22.dp)
                         ) {
 
                             Text(
-                                text =
-                                    errorMessage ?: "",
-                                color = OlimpicError,
-                                modifier =
-                                    Modifier.padding(
-                                        top = 10.dp
-                                    ),
-                                style =
-                                    MaterialTheme.typography.bodyMedium
+                                text = "Bienvenido",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = OlimpicTextPrimary,
+                                fontWeight = FontWeight.Bold
                             )
-                        }
 
-                        Spacer(
-                            modifier = Modifier.height(20.dp)
-                        )
+                            Spacer(
+                                modifier = Modifier.height(4.dp)
+                            )
 
-                        Button(
-                            onClick = {
+                            Text(
+                                text = "Ingresa con tu cuenta corporativa.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = OlimpicTextSecondary
+                            )
 
-                                val cleanEmail = email
-                                    .trim()
-                                    .lowercase()
+                            Spacer(
+                                modifier = Modifier.height(22.dp)
+                            )
 
-                                when {
+                            Text(
+                                text = "Correo corporativo",
+                                style = MaterialTheme.typography.labelLarge
+                            )
 
-                                    cleanEmail == "alumno@example.cl" -> {
-                                        onLoginSuccess()
-                                    }
+                            Spacer(
+                                modifier = Modifier.height(7.dp)
+                            )
 
-                                    cleanEmail.endsWith("@cajalosandes.cl") -> {
-                                        onLoginSuccess()
-                                    }
+                            OutlinedTextField(
+                                value = email,
+                                onValueChange = {
+                                    email = it.trim()
+                                    errorMessage = null
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                placeholder = {
+                                    Text(
+                                        "nombre@cajalosandes.cl"
+                                    )
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Email,
+                                        contentDescription = null,
+                                        tint = OlimpicBlue
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Email,
+                                    imeAction = ImeAction.Next
+                                ),
+                                singleLine = true,
+                                shape = RoundedCornerShape(15.dp)
+                            )
 
-                                    else -> {
-                                        errorMessage =
-                                            "Debes utilizar un correo autorizado de Caja Los Andes."
-                                    }
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(54.dp),
-                            shape =
-                                RoundedCornerShape(15.dp),
-                            colors =
-                                ButtonDefaults.buttonColors(
-                                    containerColor =
-                                        OlimpicBlue
-                                )
-                        ) {
+                            Spacer(
+                                modifier = Modifier.height(15.dp)
+                            )
 
-                            if (loading) {
+                            Text(
+                                text = "Contraseña",
+                                style = MaterialTheme.typography.labelLarge
+                            )
 
-                                CircularProgressIndicator(
-                                    modifier =
-                                        Modifier.size(
-                                            22.dp
-                                        ),
-                                    color =
-                                        Color.White,
-                                    strokeWidth =
-                                        2.dp
-                                )
+                            Spacer(
+                                modifier = Modifier.height(7.dp)
+                            )
 
-                            } else {
+                            OutlinedTextField(
+                                value = password,
+                                onValueChange = {
+                                    password = it
+                                    errorMessage = null
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                placeholder = {
+                                    Text("••••••••")
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Lock,
+                                        contentDescription = null,
+                                        tint = OlimpicBlue
+                                    )
+                                },
+                                visualTransformation =
+                                    PasswordVisualTransformation(),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Password,
+                                    imeAction = ImeAction.Done
+                                ),
+                                singleLine = true,
+                                shape = RoundedCornerShape(15.dp)
+                            )
+
+                            AnimatedVisibility(
+                                visible =
+                                    errorMessage != null
+                            ) {
 
                                 Text(
                                     text =
-                                        "Iniciar sesión",
-                                    fontWeight =
-                                        FontWeight.Bold
+                                        errorMessage ?: "",
+                                    color = OlimpicError,
+                                    modifier =
+                                        Modifier.padding(
+                                            top = 10.dp
+                                        ),
+                                    style =
+                                        MaterialTheme.typography.bodyMedium
                                 )
                             }
-                        }
 
-                        Spacer(
-                            modifier = Modifier.height(18.dp)
-                        )
+                            Spacer(
+                                modifier = Modifier.height(20.dp)
+                            )
 
-                        Row(
-                            modifier =
-                                Modifier.fillMaxWidth(),
-                            verticalAlignment =
-                                Alignment.CenterVertically
-                        ) {
+                            Button(
+                                onClick = {
 
-                            HorizontalDivider(
+                                    val cleanEmail = email
+                                        .trim()
+                                        .lowercase()
+
+                                    when {
+
+                                        cleanEmail == "alumno@example.cl" -> {
+                                            onLoginSuccess()
+                                        }
+
+                                        cleanEmail.endsWith("@cajalosandes.cl") -> {
+                                            onLoginSuccess()
+                                        }
+
+                                        else -> {
+                                            errorMessage =
+                                                "Debes utilizar un correo autorizado de Caja Los Andes."
+                                        }
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(54.dp),
+                                shape =
+                                    RoundedCornerShape(15.dp),
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        containerColor =
+                                            OlimpicBlue
+                                    )
+                            ) {
+
+                                if (loading) {
+
+                                    CircularProgressIndicator(
+                                        modifier =
+                                            Modifier.size(
+                                                22.dp
+                                            ),
+                                        color =
+                                            Color.White,
+                                        strokeWidth =
+                                            2.dp
+                                    )
+
+                                } else {
+
+                                    Text(
+                                        text =
+                                            "Iniciar sesión",
+                                        fontWeight =
+                                            FontWeight.Bold
+                                    )
+                                }
+                            }
+
+                            Spacer(
+                                modifier = Modifier.height(18.dp)
+                            )
+
+                            Row(
                                 modifier =
-                                    Modifier.weight(1f),
-                                color =
-                                    OlimpicBorder
-                            )
+                                    Modifier.fillMaxWidth(),
+                                verticalAlignment =
+                                    Alignment.CenterVertically
+                            ) {
 
-                            Text(
-                                text = "  o  ",
-                                color =
-                                    OlimpicTextSecondary
-                            )
-
-                            HorizontalDivider(
-                                modifier =
-                                    Modifier.weight(1f),
-                                color =
-                                    OlimpicBorder
-                            )
-                        }
-
-                        Spacer(
-                            modifier = Modifier.height(18.dp)
-                        )
-
-                        OutlinedButton(
-                            onClick = onGoogleClick,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(54.dp),
-                            shape =
-                                RoundedCornerShape(15.dp),
-                            border =
-                                ButtonDefaults.outlinedButtonBorder
-                        ) {
-
-                            Text(
-                                text =
-                                    "Continuar con Google",
-                                color =
-                                    OlimpicTextPrimary,
-                                fontWeight =
-                                    FontWeight.SemiBold
-                            )
-                        }
-
-                        Spacer(
-                            modifier = Modifier.height(10.dp)
-                        )
-
-                        TextButton(
-                            onClick =
-                                onRegisterClick,
-                            modifier =
-                                Modifier.align(
-                                    Alignment.CenterHorizontally
+                                HorizontalDivider(
+                                    modifier =
+                                        Modifier.weight(1f),
+                                    color =
+                                        OlimpicBorder
                                 )
-                        ) {
 
-                            Text(
-                                text =
-                                    "Crear una cuenta",
-                                color =
-                                    OlimpicBlue,
-                                fontWeight =
-                                    FontWeight.SemiBold
+                                Text(
+                                    text = "  o  ",
+                                    color =
+                                        OlimpicTextSecondary
+                                )
+
+                                HorizontalDivider(
+                                    modifier =
+                                        Modifier.weight(1f),
+                                    color =
+                                        OlimpicBorder
+                                )
+                            }
+
+                            Spacer(
+                                modifier = Modifier.height(18.dp)
                             )
+
+                            OutlinedButton(
+                                onClick = onGoogleClick,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(54.dp),
+                                shape =
+                                    RoundedCornerShape(15.dp),
+                                border =
+                                    ButtonDefaults.outlinedButtonBorder
+                            ) {
+
+                                Text(
+                                    text =
+                                        "Continuar con Google",
+                                    color =
+                                        OlimpicTextPrimary,
+                                    fontWeight =
+                                        FontWeight.SemiBold
+                                )
+                            }
+
+                            Spacer(
+                                modifier = Modifier.height(10.dp)
+                            )
+
+                            TextButton(
+                                onClick =
+                                    onRegisterClick,
+                                modifier =
+                                    Modifier.align(
+                                        Alignment.CenterHorizontally
+                                    )
+                            ) {
+
+                                Text(
+                                    text =
+                                        "Crear una cuenta",
+                                    color =
+                                        OlimpicBlue,
+                                    fontWeight =
+                                        FontWeight.SemiBold
+                                )
+                            }
                         }
                     }
                 }
